@@ -33,7 +33,7 @@ SELECT CODIGO FROM almacenes WHERE CAPACIDAD < (SELECT COUNT(*) FROM cajas WHERE
 SELECT NUMREFERENCIA FROM cajas WHERE ALMACEN IN (SELECT CODIGO FROM almacenes WHERE LUGAR = 'Bilbao');
 
 # 3.11. Insertar un nuevo almacén en Barcelona con capacidad para 3 cajas.
-INSERT INTO almacenes(LUGAR, CAPACIDAD) VALUES('Barcelona', 3);
+INSERT INTO almacenes(CODIGO, LUGAR, CAPACIDAD) VALUES(6, 'Barcelona', 3);
 
 # 3.12. Insertar una nueva caja, con número de referencia 'HS5RT', con contenido 'Papel', valor 200, y situada en el almacén 2.
 INSERT INTO cajas VALUES('H5RT', 'Papel', 200, 2);
@@ -42,11 +42,11 @@ INSERT INTO cajas VALUES('H5RT', 'Papel', 200, 2);
 UPDATE cajas SET VALOR = VALOR * 0.85;
 
 # 3.14. Rebajar un 20% el valor de todas las cajas cuyo valor sea superior al valor medio de todas las cajas.
-UPDATE cajas SET VALOR = VALOR * 0.80 WHERE VALOR > (SELECT AVG(VALOR) FROM cajas);
+UPDATE cajas SET VALOR = VALOR * 0.80 WHERE VALOR > (SELECT AVG(cajas2.VALOR) FROM (SELECT * FROM cajas) cajas2);
 
 # 3.15. Eliminar todas las cajas cuyo valor sea inferior a 100 €.
 DELETE FROM cajas WHERE VALOR < 100;
 
 # 3.16. Vaciar el contenido de los almacenes que estén saturados.
-DELETE FROM cajas WHERE ALMACEN IN (SELECT CODIGO FROM almacenes WHERE CAPACIDAD < (SELECT COUNT(*) FROM cajas WHERE ALMACEN = CODIGO ))
+DELETE FROM cajas WHERE ALMACEN IN (SELECT a.CODIGO FROM almacenes a INNER JOIN (SELECT ALMACEN, COUNT(*) AS NUMCAJAS FROM cajas GROUP BY ALMACEN) b ON a.CODIGO = b.ALMACEN WHERE b.NUMCAJAS >= a.CAPACIDAD);
 
