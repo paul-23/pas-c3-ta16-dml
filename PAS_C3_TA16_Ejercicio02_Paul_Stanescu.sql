@@ -64,6 +64,6 @@ DELETE FROM empleados WHERE DEPARTAMENTO = 14;
 DELETE FROM empleados WHERE DEPARTAMENTO IN (SELECT CODIGO FROM departamentos WHERE PRESUPUESTO >= 60000);
 
 # 2.20. Despedir a todos los empleados.
-DELETE FROM EMPLEADOS;
+DELETE FROM empleados;
 
 
